@@ -3,8 +3,6 @@
 require 'sinatra'
 require 'haml'
 
-set :public_folder, File.dirname(__FILE__) + '/static'
-
 # IEがクソ過ぎてこう書かないと文字化ける(METAタグ単独は無駄)
 get '/' do
 	@base_url ||= "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
@@ -13,7 +11,9 @@ get '/' do
 end
 
 get '/s' do
-	content_type :js
+	params.reject! do |k, v|
+		v == ""
+	end
 	locals = {"shussha_sub" => 20, "taisha_sub" => 20, "kyukei_time" => "0130"}.merge(params)
 	erb :script, :locals => locals
 end

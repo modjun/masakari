@@ -1,49 +1,93 @@
 %html
 	%head
 		%meta{:charset => 'utf-8'}
-		%script{:type => 'text/javascript', :src => 'https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}
-
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		%link{:rel => 'stylesheet', :href => '//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css'}
+		%title Masakari
 	%body
-		%h1 Masakari
-		%h2 Masakariとは
-		Masakariは、勤太郎の入力補助ツールです。以下の機能を持ちます。
-		%dl
-			%dt 自動入力
-			%dd 出社時間・退社時間・実働時間を、入館時間・退館時間から自動入力します。すでに入力されている場合は自動入力は行いません。休日へは自動入力は行いません。
-			%dt 自動変更
-			%dd 出社時間・退社時間を変更した場合、自動的に実労時間を再計算します。
-				
-		%h2 Masakariの使い方
-		以下を入力してボタンを押下し、出てきたリンクをブックマークしてください。
-		%br
-		勤太郎を開いた状態で、登録したブックマークを開くと、Masakariが実行されます。
-		%br
-		%label
-			出社差分
-			%input{:type => 'text', :id => 'shussha_sub'}
-		%br
-		%label
-			休憩時間
-			%input{:type => 'text', :id => 'kyukei_time'}
-		%br
-		%label
-			退社差分
-			%input{:type => 'text', :id => 'taisha_sub'}
-		%br
-		%input{:type => 'button', :id => "go", :value => "GO"}
-		%br
-		%div.result
-		
-		%h2 特記事項
-		%ul
-			%li Masakariは、<a href="http://kintarou.herokuapp.com/">筋太郎</a>のアレンジです。吉田氏に敬意を表します。
-			%li Masakariの利用は、自己責任でお願いいたします。
-			%li ブックマークをクリックしても、正しくMasakariが実行されないことがあります（ライブラリのロード遅延が原因です）。その場合、もう一度ブックマークをクリックしてみてください。
-		
+		%div.container
+			%div.row
+				%div.page-header{:style=>"margin-right:auto;margin-left:auto;"}
+					%h1 Masakari
+				%div.col-lg-8
+					%div
+						%h2#about Masakariとは
+						%p Masakariは、勤太郎の入力補助ツールです。以下の機能を持ちます。
+						%dl.dl-horizontal
+							%dt 自動入力
+							%dd 出社時間・退社時間・実働時間を、入館時間・退館時間から自動入力します。
+							%dt 自動変更
+							%dd 出社時間・退社時間を変更した場合、自動的に実労時間を再計算します。
+					%br
+					%div
+						%h2#how-to 使い方
+						%p 右のフォームを入力してボタンを押下し、出てきたリンクを右クリックして、ブックマークしてください。（下図を参考にしてください。）
+						%p 勤太郎の勤怠入力画面を開いた状態で、登録したブックマークを開くと、Masakariが実行されます。お気に入りバーから呼び出すのがオススメです。
+						%img.img-thumbnail{:src => "pic1.png", :alt => "お気に入りに追加します。"}
+					%br
+					%div
+						%h2#params パラメータの意味
+						%table.table.table-hover
+							%tr
+								%th{:width => "80px"} 名前
+								%th 概説
+								%th 詳細
+							%tr
+								%td 出社差分
+								%td 入館時間と出社時間の時間差（分）
+								%td 入館時間から何分後を出社時間とするかを、分単位で入力します。出社時間は、10分単位で切り捨てられます。<em>例：9:35に入館し、出社差分が20の場合、出社時間は9:50となります。</em>デフォルト値は20です。
+							%tr
+								%td 休憩時間
+								%td 休憩時間（4桁）
+								%td 休憩時間として、実働時間に計上しない時間を、4桁の数字で入力します。<em>例：1時間半休憩ならば、0130を入力します。</em>デフォルト値は0130です。
+							%tr
+								%td 退社差分
+								%td 退館時間と退社時間の時間差（分）
+								%td 退館時間の何分前を退社時間とするかを、分単位で入力します。退社時間は、10分単位で切り捨てられます。<em>例：20:35に退館し、退社差分が20の場合、出社時間は20:10となります。</em>デフォルト値は20です。
+					%br
+					%div
+						%h2#attention 特記事項等
+						%ul
+							%li Masakariは、吉田氏の開発した<a href="http://kintarou.herokuapp.com/">筋太郎</a>のアレンジです。吉田氏に敬意を表します。
+							%li Masakariの利用は、自己責任でお願いいたします。
+							%li ブックマークをクリックしても、正しくMasakariが実行されないことがあります（ライブラリのロード遅延が原因です）。その場合、もう一度Masakariを実行してみてください。（右上の勤太郎ロゴに、powered by Masakariが表示されれば実行成功です。）
+					%br
+					%div
+						%h2#contact 連絡先
+						%p バグ報告等は、以下にお願いいたします。
+						%address
+							%strong 下田
+							%br
+							%a{:href => "mailto:junpei.shimoda@gmail.com"} junpei.shimoda@gmail.com
+							%br
+							%a{:href => "https://github.com/modjun/masakari"} github
+				%div.col-lg-3.well
+					%h2 Quick Start
+					%form.form-horizontal
+						%div.form-group
+							%label.control-label.col-lg-4{:for=>'shussha_sub'} 出社差分
+							%div.col-lg-8
+								%input.form-control{:type => 'text', :id => 'shussha_sub', :placeholder => '20'}
+						%div.form-group
+							%label.control-label.col-lg-4{:for=>'kyukei_time'} 休憩時間
+							%div.col-lg-8
+								%input.form-control{:type => 'text', :id => 'kyukei_time', :placeholder => '0130'}
+						%div.form-group
+							%label.control-label.col-lg-4{:for=>'taisha_sub'} 退社差分
+							%div.col-lg-8
+								%input.form-control{:type => 'text', :id => 'taisha_sub', :placeholder => '20'}
+						%div.form-group
+							%div.col-offset-5.col-lg-2
+								%a.btn.btn-primary#go GO
+					%div
+						%div 以下に表示されるリンクをブックマークに追加してください。
+						%div.result.lead
+		%script{:src => 'https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}
+		%script{:src=>'//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js'}
 		:javascript
 			$($("#go").click(function(){
 				var a = document.createElement("a");
 				a.href = "javascript:(function(){document.body.appendChild(document.createElement('script')).src='#{@base_url}" + "/s?shussha_sub=" + $("#shussha_sub").val() + "&taisha_sub=" + $("#taisha_sub").val() + "&break_time=" + $("#kyukei_time").val() + "';})();"
-				a.appendChild(document.createTextNode("link"));
+				a.appendChild(document.createTextNode("Masakari"));
 				$(".result").html(a);
 			}));

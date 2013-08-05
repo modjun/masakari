@@ -1,12 +1,12 @@
-var params = {
-	shussha_sub: <%=shussha_sub%>,
-	kyukei: "<%=kyukei_time%>",
-	taisha_sub:<%=taisha_sub%>};
-var frameDocument, nyukan, shussha, taikan, taisha, tr, jitsudou, kyuka;
-
 String.prototype.padLeft = function(length, character) {
 	return new Array(length - this.length + 1).join(character || "0") + this;
 };
+
+var params = {
+	shussha_sub: <%=shussha_sub%>,
+	kyukei: "<%=kyukei_time%>".padLeft(4, "0"),
+	taisha_sub:<%=taisha_sub%>};
+var frameDocument, nyukan, shussha, taikan, taisha, tr, jitsudou, kyuka;
 
 function loadScript(url) {
 	var s = document.createElement("script");
@@ -107,6 +107,7 @@ setTimeout(function(){
 			
 		}
 		taisha[i].change();
-	}}
-	,1000
+	}
+	$("td.title", frameDocument).append("<strong>powerd by Masakari</strong>")}
+	,2000
 );
