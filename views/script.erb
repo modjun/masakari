@@ -1,0 +1,112 @@
+var params = {
+	shussha_sub: <%=shussha_sub%>,
+	kyukei: "<%=kyukei_time%>",
+	taisha_sub:<%=taisha_sub%>};
+var frameDocument, nyukan, shussha, taikan, taisha, tr, jitsudou, kyuka;
+
+String.prototype.padLeft = function(length, character) {
+	return new Array(length - this.length + 1).join(character || "0") + this;
+};
+
+function loadScript(url) {
+	var s = document.createElement("script");
+	s.src = url;
+	document.getElementsByTagName("head")[0].appendChild(s);
+}
+
+function calcDiffHoursString(time1, time2) {
+	var hour, minute, workingtime_in_min;	
+	workingtime_in_min = moment(time2, ["HHmm"]).diff(moment(time1, ["HHmm"]), "minutes");
+	hour = Math.floor(workingtime_in_min / 60);
+	minute = workingtime_in_min % 60;
+	return String(hour).padLeft(2, "0") + String(minute).padLeft(2, "0");
+}
+
+function insertJitsudou(e) {
+	var jitsudou_hirunuki, jitsudou_raw;
+	var i = e.data.i;
+	if (shussha[i].val()!==""&&taisha[i].val()!=="") {
+		jitsudou_raw = calcDiffHoursString(shussha[i].val().padLeft(4, "0"), taisha[i].val().padLeft(4, "0"));
+		jitsudou_hirunuki = calcDiffHoursString(params.kyukei, jitsudou_raw);
+		jitsudou_hirunuki = jitsudou_hirunuki.slice(0, 3) + "0";
+		jitsudou[i].val(jitsudou_hirunuki);
+	}
+}
+
+loadScript("https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js");
+loadScript("http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js");
+
+setTimeout(function(){
+	frameDocument = $("html", window.parent.frames[1].document);
+	tr = $("table[border=3] tr", frameDocument);
+	nyukan = [];
+	taikan = [];
+	taisha = [];
+	shussha = [];
+	jitsudou = [];
+	kyuka = [];
+	
+	tr.each(function(m) {
+		if ($("td", this).eq(0).text() === "休暇区分") {
+			$("td > select", this).each(function(i) {
+				kyuka.push($(this).val() !== "Holiday_1");
+			});
+		}
+
+		if ($("td", this).eq(0).text() === "入館時間") {
+			$("td:not(.HdCels2)", this).each(function(i) {
+				var tmp;
+				tmp = $(this).text();
+				if (tmp.match(/\d{4}/i)) {
+					nyukan.push(tmp);
+				} else {
+					nyukan.push(null);
+				}
+			});
+		}
+		if ($("td", this).eq(0).text() === "退館時間") {
+			$("td:not(.HdCels2)", this).each(function(i) {
+				var tmp;
+				tmp = $(this).text();
+				if (tmp.match(/\d{4}/i)) {
+					return taikan.push(tmp);
+				} else {
+					return taikan.push(null);
+				}
+			});
+		}
+		if ($("td", this).eq(0).text() === "出社時間") {
+			$("td > input", this).each(function(i) {
+				shussha.push($(this));
+				$(this).change({i:i}, insertJitsudou);
+				if ($(this).val() === "" && !kyuka[i] && nyukan[i] !== null) {
+					$(this).val(moment(nyukan[i], "HHmm").add({minutes:params.shussha_sub}).format("HHmm").slice(0, 3) + "0");
+				}
+			});
+		}
+		if ($("td", this).eq(0).text() === "退社時間") {
+			$("td > input", this).each(function(i) {
+				taisha.push($(this));
+				$(this).change({i:i}, insertJitsudou);
+			});
+		}
+		if ($("td", this).eq(0).text() === "実働時間") {
+			$("td > input", this).each(function(i) {
+				jitsudou.push($(this));
+			});
+		}
+	});
+	for (var i=0; i < taisha.length; ++i) {
+		if (taisha[i].val() === "" && !kyuka[i]) {
+			var taisha_time;
+			if (taikan[i] !== null) {
+				taisha_time = moment(taikan[i], "HHmm").subtract({minutes:params.taisha_sub}).format("HHmm");
+				taisha_time = taisha_time.slice(0, 3) + "0";
+				taisha[i].val(taisha_time);
+			}
+			
+		}
+		taisha[i].change();
+	}}
+	,1000
+);

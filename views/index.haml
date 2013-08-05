@@ -1,0 +1,49 @@
+%html
+	%head
+		%meta{:charset => 'utf-8'}
+		%script{:type => 'text/javascript', :src => 'https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}
+
+	%body
+		%h1 Masakari
+		%h2 Masakariとは
+		Masakariは、勤太郎の入力補助ツールです。以下の機能を持ちます。
+		%dl
+			%dt 自動入力
+			%dd 出社時間・退社時間・実働時間を、入館時間・退館時間から自動入力します。すでに入力されている場合は自動入力は行いません。休日へは自動入力は行いません。
+			%dt 自動変更
+			%dd 出社時間・退社時間を変更した場合、自動的に実労時間を再計算します。
+				
+		%h2 Masakariの使い方
+		以下を入力してボタンを押下し、出てきたリンクをブックマークしてください。
+		%br
+		勤太郎を開いた状態で、登録したブックマークを開くと、Masakariが実行されます。
+		%br
+		%label
+			出社差分
+			%input{:type => 'text', :id => 'shussha_sub'}
+		%br
+		%label
+			休憩時間
+			%input{:type => 'text', :id => 'kyukei_time'}
+		%br
+		%label
+			退社差分
+			%input{:type => 'text', :id => 'taisha_sub'}
+		%br
+		%input{:type => 'button', :id => "go", :value => "GO"}
+		%br
+		%div.result
+		
+		%h2 特記事項
+		%ul
+			%li Masakariは、<a href="http://kintarou.herokuapp.com/">筋太郎</a>のアレンジです。吉田氏に敬意を表します。
+			%li Masakariの利用は、自己責任でお願いいたします。
+			%li ブックマークをクリックしても、正しくMasakariが実行されないことがあります（ライブラリのロード遅延が原因です）。その場合、もう一度ブックマークをクリックしてみてください。
+		
+		:javascript
+			$($("#go").click(function(){
+				var a = document.createElement("a");
+				a.href = "javascript:(function(){document.body.appendChild(document.createElement('script')).src='#{@base_url}" + "/s?shussha_sub=" + $("#shussha_sub").val() + "&taisha_sub=" + $("#taisha_sub").val() + "&break_time=" + $("#kyukei_time").val() + "';})();"
+				a.appendChild(document.createTextNode("link"));
+				$(".result").html(a);
+			}));
